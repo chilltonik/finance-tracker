@@ -27,7 +27,11 @@ pip install -r requirements.txt
 
 ### Run Application
 ```bash
+# Method 1: Run via entry point script
 python main.py
+
+# Method 2: Run as Python module
+python -m finance_tracker
 ```
 
 ## Code Quality
@@ -66,55 +70,77 @@ pre-commit install
 ## Project Structure
 
 ```
-claude_project/
-├── main.py              # Main application entry point and UI logic
-├── database.py          # SQLite database operations and queries
-├── theme_manager.py     # Theme loading, switching, and persistence
-├── ui/
-│   ├── colors.py        # Dynamic color loading from themes
-│   └── widgets.py       # Custom UI widgets (cards, buttons, etc.)
-├── config/
-│   ├── themes.toml      # Theme definitions (5 presets)
-│   └── settings.toml    # User preferences (selected theme)
-├── data/                # SQLite database storage (auto-created)
-└── requirements.txt     # Python dependencies
+finance_tracker/  (project root)
+├── finance_tracker/         # Main application package
+│   ├── __init__.py          # Package initialization
+│   ├── __main__.py          # Module entry point (python -m finance_tracker)
+│   ├── app.py               # Main application UI logic
+│   ├── database.py          # SQLite database operations and queries
+│   ├── theme_manager.py     # Theme loading, switching, and persistence
+│   ├── ui/
+│   │   ├── __init__.py
+│   │   ├── colors.py        # Dynamic color loading from themes
+│   │   └── widgets.py       # Custom UI widgets (cards, buttons, etc.)
+│   └── config/
+│       ├── __init__.py
+│       ├── themes.toml      # Theme definitions (5 presets)
+│       └── settings.toml    # User preferences (selected theme)
+├── tests/                   # Test files
+│   ├── __init__.py
+│   ├── test_app.py
+│   ├── test_themes.py
+│   └── test_ui_refresh.py
+├── data/                    # SQLite database storage (auto-created)
+├── docs/                    # Documentation
+├── scripts/                 # Utility scripts
+├── main.py                  # Simple entry point script
+├── requirements.txt         # Python dependencies
+├── requirements-dev.txt     # Development dependencies
+└── pyproject.toml           # Project configuration
 ```
 
 ## Architecture
 
-### Database Layer (`database.py`)
+### Database Layer (`finance_tracker/database.py`)
 - Single `Database` class handles all SQLite operations
 - Two main tables: `transactions` and `balance_history`
 - All transactions tracked with type (income/expense), category, amount, description, and timestamp
 - Statistics calculated on-the-fly from transaction data
 
 ### Theme System
-- **theme_manager.py**: Singleton `ThemeManager` class
-  - Loads themes from `config/themes.toml` using tomllib
+- **finance_tracker/theme_manager.py**: Singleton `ThemeManager` class
+  - Loads themes from `finance_tracker/config/themes.toml` using tomllib
   - Manages current theme selection
-  - Saves user preference to `config/settings.toml` using tomli-w
+  - Saves user preference to `finance_tracker/config/settings.toml` using tomli-w
   - Provides theme switching API
-- **ui/colors.py**: Dynamic color module
+  - Paths automatically resolved relative to package directory
+- **finance_tracker/ui/colors.py**: Dynamic color module
   - Initializes from current theme on import
   - Provides `reload_colors()` function to update after theme switch
   - All color constants remain as module-level variables for compatibility
 
 ### UI Layer
-- **main.py**: Contains `FinanceTrackerApp` class (main CTk window) with four views:
+- **finance_tracker/app.py**: Contains `FinanceTrackerApp` class (main CTk window) with four views:
   - Dashboard: Shows balance card, statistics, and recent transactions
   - Add Transaction: Form for adding new income/expense entries
   - History: Scrollable list of all transactions
   - Settings: Theme selector with preview and apply button
-- **ui/colors.py**: Centralized color definitions in crypto wallet dark theme style
-- **ui/widgets.py**: Reusable components:
+- **finance_tracker/ui/colors.py**: Centralized color definitions in crypto wallet dark theme style
+- **finance_tracker/ui/widgets.py**: Reusable components:
   - `BalanceCard`: Large balance display card
   - `StatCard`: Statistics display cards
   - `TransactionItem`: Individual transaction row
   - `ModernButton`: Styled button component
   - `GradientFrame`: Styled container frame
 
+### Entry Points
+- **main.py**: Simple entry point that imports from the package
+- **finance_tracker/__main__.py**: Allows running as module with `python -m finance_tracker`
+
 ### Design Patterns
-- Color constants defined in `ui/colors.py` and imported throughout
+- **Package-based structure**: All application code in `finance_tracker/` package
+- **Absolute imports**: All imports use full package path (e.g., `from finance_tracker.ui.colors import ...`)
+- Color constants defined in `finance_tracker/ui/colors.py` and imported throughout
 - Database operations separated from UI logic
 - Reusable widget components for consistent styling
 - Transaction data passed as dictionaries between layers
@@ -136,15 +162,27 @@ claude_project/
 ## Adding Features
 
 ### New Transaction Category
-1. Add color to `CATEGORY_COLORS` in `ui/colors.py`
+1. Add color to `CATEGORY_COLORS` in `finance_tracker/ui/colors.py`
 2. Category will auto-appear in dropdown
 
 ### New View/Page
-1. Add navigation button in `_setup_ui()` sidebar
+1. Add navigation button in `_setup_ui()` sidebar in `finance_tracker/app.py`
 2. Create `show_*()` method in `FinanceTrackerApp`
 3. Call `_clear_content()` first to remove old view
 
 ### Database Schema Changes
-1. Modify `init_database()` in `database.py`
+1. Modify `init_database()` in `finance_tracker/database.py`
 2. Add new query methods as needed
 3. Database auto-creates on first run (no migrations needed for SQLite)
+
+### Import Convention
+When adding new modules, always use absolute imports with the full package path:
+```python
+# Correct
+from finance_tracker.database import Database
+from finance_tracker.ui.colors import ACCENT_PURPLE
+
+# Incorrect (do not use relative imports at package level)
+from .database import Database
+from ..ui.colors import ACCENT_PURPLE
+```

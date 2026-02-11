@@ -4,9 +4,6 @@
 import os
 import sys
 
-# Add current directory to path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
 print("=" * 60)
 print("Testing Finance Tracker Application Startup")
 print("=" * 60)
@@ -14,9 +11,9 @@ print("=" * 60)
 try:
     # Test imports
     print("\n[1/5] Testing imports...")
-    from database import Database
-    from theme_manager import theme_manager
-    from ui.colors import (
+    from finance_tracker.database import Database
+    from finance_tracker.theme_manager import theme_manager
+    from finance_tracker.ui.colors import (
         ACCENT_BLUE,
         ACCENT_GREEN,
         ACCENT_PURPLE,

@@ -1,8 +1,11 @@
 """Database management for the finance tracker."""
 
+import logging
 import sqlite3
 from datetime import datetime
 from typing import Any, Dict, List
+
+logger = logging.getLogger(__name__)
 
 
 class Database:
@@ -70,7 +73,7 @@ class Database:
                 conn.commit()
                 return True
         except Exception as e:
-            print(f"Error adding transaction: {e}")
+            logger.error(f"Error adding transaction: {e}", exc_info=True)
             return False
 
     def get_transactions(self, limit: int = 50) -> List[Dict[str, Any]]:
@@ -153,5 +156,5 @@ class Database:
                 conn.commit()
                 return True
         except Exception as e:
-            print(f"Error deleting transaction: {e}")
+            logger.error(f"Error deleting transaction: {e}", exc_info=True)
             return False

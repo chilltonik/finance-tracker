@@ -1,14 +1,25 @@
 """Color scheme inspired by modern crypto wallets."""
 
+import logging
+import sys
 from typing import Dict
 
-from theme_manager import theme_manager
+from finance_tracker.theme_manager import theme_manager
+
+logger = logging.getLogger(__name__)
 
 # Initialize theme manager (safe to call multiple times)
 try:
     theme_manager.initialize()
-except Exception:
-    pass  # Will use default values below if theme loading fails
+except FileNotFoundError as e:
+    logger.critical(f"FATAL: Theme configuration not found: {e}")
+    print(f"FATAL: Theme configuration not found: {e}", file=sys.stderr)
+    sys.exit(1)
+except Exception as e:
+    logger.warning(
+        f"Theme loading failed, using hardcoded defaults: {e}", exc_info=True
+    )
+    # Continue with default hardcoded values defined below
 
 # Get initial theme
 _theme = theme_manager.get_current_theme()

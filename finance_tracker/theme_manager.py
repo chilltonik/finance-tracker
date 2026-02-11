@@ -1,9 +1,10 @@
 """Theme management for the Finance Tracker application."""
 
+import logging
+import re
+import tomllib
 from pathlib import Path
 from typing import Any, Dict, List
-import tomllib
-
 
 try:
     import tomli_w
@@ -11,6 +12,8 @@ except ImportError:
     raise ImportError(
         "tomli_w required for writing TOML files. Install: pip install tomli-w"
     )
+
+logger = logging.getLogger(__name__)
 
 
 class ThemeManager:
@@ -30,8 +33,10 @@ class ThemeManager:
         if not ThemeManager._initialized:
             self.themes: Dict[str, Dict[str, Any]] = {}
             self.current_theme_key: str = "default"
-            self.themes_path: Path = Path("config/themes.toml")
-            self.settings_path: Path = Path("config/settings.toml")
+            # Get the package directory
+            package_dir = Path(__file__).parent
+            self.themes_path: Path = package_dir / "config" / "themes.toml"
+            self.settings_path: Path = package_dir / "config" / "settings.toml"
             ThemeManager._initialized = True
 
     def initialize(self) -> None:
@@ -55,6 +60,13 @@ class ThemeManager:
 
         self.themes = data["theme"]
 
+        # Validate required default theme exists
+        if "default" not in self.themes:
+            raise ValueError(
+                "FATAL: Required 'default' theme not found in themes.toml. "
+                "At least one theme named 'default' must exist."
+            )
+
     def _load_settings(self) -> None:
         """Load user settings from TOML file."""
         if not self.settings_path.exists():
@@ -70,9 +82,8 @@ class ThemeManager:
 
         # Validate theme exists
         if theme_key not in self.themes:
-            print(
-                f"Warning: Theme '{theme_key}' not found. "
-                f"Using 'default' theme."
+            logger.warning(
+                f"Theme '{theme_key}' not found in themes.toml. Using 'default' theme."
             )
             theme_key = "default"
 
@@ -97,13 +108,20 @@ class ThemeManager:
         Switch to a different theme and save preference.
 
         Args:
-            theme_key: Key of the theme to switch to
+            theme_key: Theme identifier (alphanumeric + underscore only)
 
         Returns:
-            True if successful, False otherwise
+            True if theme was switched successfully, False otherwise
         """
+        # Validate theme_key format (defense in depth)
+        if not re.match(r"^[a-z0-9_]+$", theme_key):
+            logger.error(
+                f"Invalid theme key format '{theme_key}'. Only lowercase alphanumeric and underscore allowed."
+            )
+            return False
+
         if theme_key not in self.themes:
-            print(f"Error: Theme '{theme_key}' not found")
+            logger.warning(f"Theme '{theme_key}' not found")
             return False
 
         self.current_theme_key = theme_key
@@ -124,8 +142,19 @@ class ThemeManager:
 
             self._save_settings(settings)
             return True
+        except PermissionError as e:
+            logger.error(f"Permission denied writing theme settings: {e}")
+            # In future: show error dialog to user in GUI
+            return False
+        except OSError as e:
+            logger.error(
+                f"I/O error saving theme settings: {e}", exc_info=True
+            )
+            return False
         except Exception as e:
-            print(f"Error saving theme preference: {e}")
+            logger.error(
+                f"Failed to save theme preference: {e}", exc_info=True
+            )
             return False
 
     def get_color(self, color_name: str) -> str:

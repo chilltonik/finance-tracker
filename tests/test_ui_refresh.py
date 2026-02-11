@@ -4,8 +4,8 @@
 import importlib
 import sys
 
-from theme_manager import theme_manager
-from ui import colors
+from finance_tracker.theme_manager import theme_manager
+from finance_tracker.ui import colors
 
 print("=" * 70)
 print("Testing UI Refresh Mechanism")
@@ -28,7 +28,7 @@ print(f"    DARK_BG: {colors.DARK_BG} (expected: #0A1929)")
 
 # Test 3: Verify module updates
 print("\n[Test 3] Verify module-level updates")
-colors_module = sys.modules["ui.colors"]
+colors_module = sys.modules["finance_tracker.ui.colors"]
 print(f"  Module ACCENT_PURPLE: {colors_module.ACCENT_PURPLE}")
 print(f"  colors.ACCENT_PURPLE: {colors.ACCENT_PURPLE}")
 print(f"  Match: {colors_module.ACCENT_PURPLE == colors.ACCENT_PURPLE}")

@@ -4,7 +4,7 @@ from typing import Any, Callable, Dict, Optional
 
 import customtkinter as ctk
 
-from ui.colors import (
+from finance_tracker.ui.colors import (
     ACCENT_BLUE,
     ACCENT_PURPLE,
     CATEGORY_COLORS,

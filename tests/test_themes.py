@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Quick test script for theme system."""
 
-from theme_manager import theme_manager
-from ui import colors
+from finance_tracker.theme_manager import theme_manager
+from finance_tracker.ui import colors
 
 
 def test_themes() -> None:
