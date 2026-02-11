@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-"""
-Personal Finance Tracker with Crypto Wallet Design
-A modern finance tracking application built with Python and CustomTkinter.
-"""
-
 import os
 from typing import Callable, List, Optional
 

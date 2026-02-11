@@ -6,6 +6,7 @@
 
 # data
 /data
+/docs
 
 # python caches
 /**/__pycache__
