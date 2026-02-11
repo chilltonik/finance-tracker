@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "wind_rose"
+name = "finance_tracker"
 version = "1.0.0"
-dependencies = []
+dependencies = ["customtkinter>=5.2.2", "pillow>=10.2.0", "matplotlib>=3.8.2"]
 
 [tool.ruff]
 exclude = [
@@ -48,7 +48,7 @@ extend-select = [
 ignore = ["COM812"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["wind_rose"]
+known-first-party = ["database", "ui"]
 split-on-trailing-comma = false 
 
 [tool.mypy]
@@ -77,3 +77,7 @@ exclude = [
     "notebooks",
 ]
 disable_error_code = ["import-not-found"]
+
+[[tool.mypy.overrides]]
+module = "customtkinter.*"
+ignore_missing_imports = true

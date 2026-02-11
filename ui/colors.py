@@ -37,5 +37,5 @@ CATEGORY_COLORS = {
     "Education": "#74B9FF",
     "Salary": "#06FFA5",
     "Investment": "#9D4EDD",
-    "Other": "#95A5A6"
+    "Other": "#95A5A6",
 }

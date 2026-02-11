@@ -25,6 +25,39 @@ pip install -r requirements.txt
 python main.py
 ```
 
+## Code Quality
+
+### Install Development Dependencies
+```bash
+pip install -r requirements-dev.txt
+```
+
+### Run Code Quality Checks
+```bash
+# Run all pre-commit hooks
+pre-commit run --all-files
+
+# Run ruff linter only
+ruff check .
+
+# Run ruff formatter
+ruff format .
+
+# Run mypy type checker
+mypy .
+```
+
+### Pre-commit Hooks
+Pre-commit is configured with:
+- **ruff**: Linting and import sorting (auto-fix enabled)
+- **ruff-format**: Code formatting
+- **mypy**: Static type checking
+
+Install pre-commit hooks:
+```bash
+pre-commit install
+```
+
 ## Project Structure
 
 ```

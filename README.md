@@ -28,6 +28,9 @@ venv\Scripts\activate  # Windows
 3. Установите зависимости:
 ```bash
 pip install -r requirements.txt
+
+# Для разработки (опционально)
+pip install -r requirements-dev.txt
 ```
 
 ## Запуск

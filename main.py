@@ -3,28 +3,44 @@
 Personal Finance Tracker with Crypto Wallet Design
 A modern finance tracking application built with Python and CustomTkinter.
 """
-import customtkinter as ctk
-from datetime import datetime
-from typing import Optional
+
 import os
+from typing import Any, Callable, List, Optional
+
+import customtkinter as ctk
 
 from database import Database
-from ui.colors import *
+from ui.colors import (
+    ACCENT_PURPLE,
+    CATEGORY_COLORS,
+    DARK_BG,
+    DARK_BG_SECONDARY,
+    DARK_BG_TERTIARY,
+    ERROR,
+    GRADIENT_START,
+    SUCCESS,
+    TEXT_MUTED,
+    TEXT_PRIMARY,
+    TEXT_SECONDARY,
+)
 from ui.widgets import (
-    BalanceCard, StatCard, TransactionItem,
-    ModernButton, GradientFrame
+    BalanceCard,
+    GradientFrame,
+    ModernButton,
+    StatCard,
+    TransactionItem,
 )
 
 
 class FinanceTrackerApp(ctk.CTk):
     """Main application window."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         # Database setup
         os.makedirs("data", exist_ok=True)
-        self.db = Database()
+        self.db: Database = Database()
 
         # Window setup
         self.title("Finance Tracker")
@@ -32,70 +48,78 @@ class FinanceTrackerApp(ctk.CTk):
         self._setup_window()
 
         # Current view
-        self.current_view = None
+        self.current_view: Optional[str] = None
+
+        # UI components
+        self.sidebar: ctk.CTkFrame
+        self.content_frame: ctk.CTkFrame
+        self.nav_buttons: List[ctk.CTkButton] = []
 
         # Initialize UI
         self._setup_ui()
         self.show_dashboard()
 
-    def _setup_window(self):
+    def _setup_window(self) -> None:
         """Configure window appearance."""
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
         self.configure(fg_color=DARK_BG)
 
-    def _setup_ui(self):
+    def _setup_ui(self) -> None:
         """Setup main UI structure."""
         # Sidebar
         self.sidebar = ctk.CTkFrame(
-            self,
-            width=200,
-            corner_radius=0,
-            fg_color=DARK_BG_SECONDARY
+            self, width=200, corner_radius=0, fg_color=DARK_BG_SECONDARY
         )
         self.sidebar.pack(side="left", fill="y")
         self.sidebar.pack_propagate(False)
 
         # Logo/Title
-        title_label = ctk.CTkLabel(
+        title_label: ctk.CTkLabel = ctk.CTkLabel(
             self.sidebar,
             text="💰 Finance\nTracker",
             font=ctk.CTkFont(size=20, weight="bold"),
-            text_color=ACCENT_PURPLE
+            text_color=ACCENT_PURPLE,
         )
         title_label.pack(pady=(30, 50))
 
         # Navigation buttons
-        self.nav_buttons = []
-
-        btn_dashboard = self._create_nav_button("📊 Dashboard", self.show_dashboard)
-        btn_add = self._create_nav_button("➕ Add Transaction", self.show_add_transaction)
-        btn_history = self._create_nav_button("📜 History", self.show_history)
+        btn_dashboard: ctk.CTkButton = self._create_nav_button(
+            "📊 Dashboard", self.show_dashboard
+        )
+        btn_add: ctk.CTkButton = self._create_nav_button(
+            "➕ Add Transaction", self.show_add_transaction
+        )
+        btn_history: ctk.CTkButton = self._create_nav_button(
+            "📜 History", self.show_history
+        )
 
         # Spacer
-        spacer = ctk.CTkFrame(self.sidebar, fg_color="transparent")
+        spacer: ctk.CTkFrame = ctk.CTkFrame(
+            self.sidebar, fg_color="transparent"
+        )
         spacer.pack(fill="both", expand=True)
 
         # Footer
-        footer_label = ctk.CTkLabel(
+        footer_label: ctk.CTkLabel = ctk.CTkLabel(
             self.sidebar,
             text="v1.0.0",
             font=ctk.CTkFont(size=10),
-            text_color=TEXT_MUTED
+            text_color=TEXT_MUTED,
         )
         footer_label.pack(pady=20)
 
         # Main content area
         self.content_frame = ctk.CTkFrame(
-            self,
-            corner_radius=0,
-            fg_color=DARK_BG
+            self, corner_radius=0, fg_color=DARK_BG
         )
         self.content_frame.pack(side="right", fill="both", expand=True)
 
-    def _create_nav_button(self, text: str, command):
+    def _create_nav_button(
+        self, text: str, command: Callable[[], None]
+    ) -> ctk.CTkButton:
         """Create a navigation button."""
-        btn = ctk.CTkButton(
+        btn: ctk.CTkButton = ctk.CTkButton(
             self.sidebar,
             text=text,
             command=command,
@@ -104,18 +128,18 @@ class FinanceTrackerApp(ctk.CTk):
             hover_color=DARK_BG_TERTIARY,
             anchor="w",
             height=40,
-            font=ctk.CTkFont(size=14)
+            font=ctk.CTkFont(size=14),
         )
         btn.pack(fill="x", padx=10, pady=5)
         self.nav_buttons.append(btn)
         return btn
 
-    def _clear_content(self):
+    def _clear_content(self) -> None:
         """Clear current content."""
         for widget in self.content_frame.winfo_children():
             widget.destroy()
 
-    def show_dashboard(self):
+    def show_dashboard(self) -> None:
         """Show dashboard view."""
         self._clear_content()
 
@@ -124,7 +148,7 @@ class FinanceTrackerApp(ctk.CTk):
             self.content_frame,
             text="Dashboard",
             font=ctk.CTkFont(size=28, weight="bold"),
-            text_color=TEXT_PRIMARY
+            text_color=TEXT_PRIMARY,
         )
         header.pack(anchor="w", padx=30, pady=(30, 20))
 
@@ -142,16 +166,16 @@ class FinanceTrackerApp(ctk.CTk):
         income_card = StatCard(
             stats_frame,
             "Monthly Income",
-            stats['monthly_income'],
-            color=SUCCESS
+            stats["monthly_income"],
+            color=SUCCESS,
         )
         income_card.pack(side="left", fill="both", expand=True, padx=(0, 10))
 
         expense_card = StatCard(
             stats_frame,
             "Monthly Expenses",
-            stats['monthly_expense'],
-            color=ERROR
+            stats["monthly_expense"],
+            color=ERROR,
         )
         expense_card.pack(side="left", fill="both", expand=True, padx=(10, 0))
 
@@ -160,15 +184,13 @@ class FinanceTrackerApp(ctk.CTk):
             self.content_frame,
             text="Recent Transactions",
             font=ctk.CTkFont(size=18, weight="bold"),
-            text_color=TEXT_PRIMARY
+            text_color=TEXT_PRIMARY,
         )
         recent_header.pack(anchor="w", padx=30, pady=(20, 10))
 
         # Scrollable frame for transactions
         scroll_frame = ctk.CTkScrollableFrame(
-            self.content_frame,
-            fg_color="transparent",
-            height=200
+            self.content_frame, fg_color="transparent", height=200
         )
         scroll_frame.pack(fill="both", expand=True, padx=30, pady=(0, 30))
 
@@ -182,11 +204,11 @@ class FinanceTrackerApp(ctk.CTk):
                 scroll_frame,
                 text="No transactions yet. Add your first transaction!",
                 font=ctk.CTkFont(size=14),
-                text_color=TEXT_MUTED
+                text_color=TEXT_MUTED,
             )
             no_trans_label.pack(pady=50)
 
-    def show_add_transaction(self):
+    def show_add_transaction(self) -> None:
         """Show add transaction form."""
         self._clear_content()
 
@@ -195,7 +217,7 @@ class FinanceTrackerApp(ctk.CTk):
             self.content_frame,
             text="Add Transaction",
             font=ctk.CTkFont(size=28, weight="bold"),
-            text_color=TEXT_PRIMARY
+            text_color=TEXT_PRIMARY,
         )
         header.pack(anchor="w", padx=30, pady=(30, 20))
 
@@ -212,7 +234,7 @@ class FinanceTrackerApp(ctk.CTk):
             form_content,
             text="Transaction Type",
             font=ctk.CTkFont(size=14, weight="bold"),
-            text_color=TEXT_PRIMARY
+            text_color=TEXT_PRIMARY,
         )
         type_label.pack(anchor="w", pady=(0, 5))
 
@@ -226,7 +248,7 @@ class FinanceTrackerApp(ctk.CTk):
             variable=type_var,
             value="income",
             fg_color=SUCCESS,
-            hover_color=SUCCESS
+            hover_color=SUCCESS,
         )
         income_radio.pack(side="left", padx=(0, 20))
 
@@ -236,7 +258,7 @@ class FinanceTrackerApp(ctk.CTk):
             variable=type_var,
             value="expense",
             fg_color=ERROR,
-            hover_color=ERROR
+            hover_color=ERROR,
         )
         expense_radio.pack(side="left")
 
@@ -245,7 +267,7 @@ class FinanceTrackerApp(ctk.CTk):
             form_content,
             text="Amount",
             font=ctk.CTkFont(size=14, weight="bold"),
-            text_color=TEXT_PRIMARY
+            text_color=TEXT_PRIMARY,
         )
         amount_label.pack(anchor="w", pady=(0, 5))
 
@@ -255,7 +277,7 @@ class FinanceTrackerApp(ctk.CTk):
             height=45,
             font=ctk.CTkFont(size=14),
             fg_color=DARK_BG_TERTIARY,
-            border_width=0
+            border_width=0,
         )
         amount_entry.pack(fill="x", pady=(0, 20))
 
@@ -264,7 +286,7 @@ class FinanceTrackerApp(ctk.CTk):
             form_content,
             text="Category",
             font=ctk.CTkFont(size=14, weight="bold"),
-            text_color=TEXT_PRIMARY
+            text_color=TEXT_PRIMARY,
         )
         category_label.pack(anchor="w", pady=(0, 5))
 
@@ -277,7 +299,7 @@ class FinanceTrackerApp(ctk.CTk):
             fg_color=DARK_BG_TERTIARY,
             border_width=0,
             button_color=ACCENT_PURPLE,
-            button_hover_color=GRADIENT_START
+            button_hover_color=GRADIENT_START,
         )
         category_combo.set(categories[0])
         category_combo.pack(fill="x", pady=(0, 20))
@@ -287,7 +309,7 @@ class FinanceTrackerApp(ctk.CTk):
             form_content,
             text="Description (Optional)",
             font=ctk.CTkFont(size=14, weight="bold"),
-            text_color=TEXT_PRIMARY
+            text_color=TEXT_PRIMARY,
         )
         desc_label.pack(anchor="w", pady=(0, 5))
 
@@ -297,12 +319,12 @@ class FinanceTrackerApp(ctk.CTk):
             height=45,
             font=ctk.CTkFont(size=14),
             fg_color=DARK_BG_TERTIARY,
-            border_width=0
+            border_width=0,
         )
         desc_entry.pack(fill="x", pady=(0, 30))
 
         # Submit button
-        def submit_transaction():
+        def submit_transaction() -> None:
             try:
                 amount = float(amount_entry.get())
                 if amount <= 0:
@@ -312,7 +334,9 @@ class FinanceTrackerApp(ctk.CTk):
                 category = category_combo.get()
                 description = desc_entry.get()
 
-                if self.db.add_transaction(trans_type, category, amount, description):
+                if self.db.add_transaction(
+                    trans_type, category, amount, description
+                ):
                     self.show_dashboard()
             except ValueError as e:
                 # Show error (in production, use a proper dialog)
@@ -322,11 +346,11 @@ class FinanceTrackerApp(ctk.CTk):
             form_content,
             text="Add Transaction",
             command=submit_transaction,
-            color=ACCENT_PURPLE
+            color=ACCENT_PURPLE,
         )
         submit_btn.pack(fill="x")
 
-    def show_history(self):
+    def show_history(self) -> None:
         """Show transaction history."""
         self._clear_content()
 
@@ -335,14 +359,13 @@ class FinanceTrackerApp(ctk.CTk):
             self.content_frame,
             text="Transaction History",
             font=ctk.CTkFont(size=28, weight="bold"),
-            text_color=TEXT_PRIMARY
+            text_color=TEXT_PRIMARY,
         )
         header.pack(anchor="w", padx=30, pady=(30, 20))
 
         # Scrollable frame for all transactions
         scroll_frame = ctk.CTkScrollableFrame(
-            self.content_frame,
-            fg_color="transparent"
+            self.content_frame, fg_color="transparent"
         )
         scroll_frame.pack(fill="both", expand=True, padx=30, pady=(0, 30))
 
@@ -356,14 +379,14 @@ class FinanceTrackerApp(ctk.CTk):
                 scroll_frame,
                 text="No transactions found",
                 font=ctk.CTkFont(size=14),
-                text_color=TEXT_MUTED
+                text_color=TEXT_MUTED,
             )
             no_trans_label.pack(pady=50)
 
 
-def main():
+def main() -> None:
     """Run the application."""
-    app = FinanceTrackerApp()
+    app: FinanceTrackerApp = FinanceTrackerApp()
     app.mainloop()
 
 
