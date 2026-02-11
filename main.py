@@ -5,12 +5,15 @@ A modern finance tracking application built with Python and CustomTkinter.
 """
 
 import os
-from typing import Any, Callable, List, Optional
+from typing import Callable, List, Optional
 
 import customtkinter as ctk
 
 from database import Database
+from theme_manager import theme_manager
 from ui.colors import (
+    ACCENT_BLUE,
+    ACCENT_GREEN,
     ACCENT_PURPLE,
     CATEGORY_COLORS,
     DARK_BG,
@@ -37,6 +40,9 @@ class FinanceTrackerApp(ctk.CTk):
 
     def __init__(self) -> None:
         super().__init__()
+
+        # Initialize theme system BEFORE UI creation
+        theme_manager.initialize()
 
         # Database setup
         os.makedirs("data", exist_ok=True)
@@ -93,6 +99,9 @@ class FinanceTrackerApp(ctk.CTk):
         btn_history: ctk.CTkButton = self._create_nav_button(
             "📜 History", self.show_history
         )
+        btn_settings: ctk.CTkButton = self._create_nav_button(
+            "⚙️ Settings", self.show_settings
+        )
 
         # Spacer
         spacer: ctk.CTkFrame = ctk.CTkFrame(
@@ -141,6 +150,7 @@ class FinanceTrackerApp(ctk.CTk):
 
     def show_dashboard(self) -> None:
         """Show dashboard view."""
+        self.current_view = "dashboard"
         self._clear_content()
 
         # Header
@@ -210,6 +220,7 @@ class FinanceTrackerApp(ctk.CTk):
 
     def show_add_transaction(self) -> None:
         """Show add transaction form."""
+        self.current_view = "add_transaction"
         self._clear_content()
 
         # Header
@@ -352,6 +363,7 @@ class FinanceTrackerApp(ctk.CTk):
 
     def show_history(self) -> None:
         """Show transaction history."""
+        self.current_view = "history"
         self._clear_content()
 
         # Header
@@ -382,6 +394,214 @@ class FinanceTrackerApp(ctk.CTk):
                 text_color=TEXT_MUTED,
             )
             no_trans_label.pack(pady=50)
+
+    def show_settings(self) -> None:
+        """Show settings view with theme selector."""
+        self.current_view = "settings"
+        self._clear_content()
+
+        # Header
+        header: ctk.CTkLabel = ctk.CTkLabel(
+            self.content_frame,
+            text="Settings",
+            font=ctk.CTkFont(size=28, weight="bold"),
+            text_color=TEXT_PRIMARY,
+        )
+        header.pack(anchor="w", padx=30, pady=(30, 20))
+
+        # Settings container
+        settings_frame: GradientFrame = GradientFrame(self.content_frame)
+        settings_frame.pack(fill="both", expand=True, padx=30, pady=(0, 30))
+
+        # Settings content
+        settings_content: ctk.CTkFrame = ctk.CTkFrame(
+            settings_frame, fg_color="transparent"
+        )
+        settings_content.pack(fill="both", expand=True, padx=40, pady=40)
+
+        # Appearance section
+        appearance_label: ctk.CTkLabel = ctk.CTkLabel(
+            settings_content,
+            text="Appearance",
+            font=ctk.CTkFont(size=20, weight="bold"),
+            text_color=TEXT_PRIMARY,
+        )
+        appearance_label.pack(anchor="w", pady=(0, 20))
+
+        # Theme selector
+        theme_label: ctk.CTkLabel = ctk.CTkLabel(
+            settings_content,
+            text="Theme",
+            font=ctk.CTkFont(size=14, weight="bold"),
+            text_color=TEXT_PRIMARY,
+        )
+        theme_label.pack(anchor="w", pady=(0, 5))
+
+        # Get available themes
+        themes = theme_manager.get_available_themes()
+        theme_names = [f"{theme['name']}" for theme in themes]
+        theme_keys = {theme["name"]: theme["key"] for theme in themes}
+
+        # Current theme
+        current_theme_key = theme_manager.current_theme_key
+        current_theme_name = next(
+            (t["name"] for t in themes if t["key"] == current_theme_key),
+            theme_names[0],
+        )
+
+        theme_var = ctk.StringVar(value=current_theme_name)
+
+        theme_combo: ctk.CTkComboBox = ctk.CTkComboBox(
+            settings_content,
+            values=theme_names,
+            variable=theme_var,
+            height=45,
+            font=ctk.CTkFont(size=14),
+            fg_color=DARK_BG_TERTIARY,
+            border_width=0,
+            button_color=ACCENT_PURPLE,
+            button_hover_color=GRADIENT_START,
+        )
+        theme_combo.pack(fill="x", pady=(0, 20))
+
+        # Theme description
+        desc_label: ctk.CTkLabel = ctk.CTkLabel(
+            settings_content,
+            text="",
+            font=ctk.CTkFont(size=12),
+            text_color=TEXT_SECONDARY,
+            wraplength=600,
+            justify="left",
+        )
+        desc_label.pack(anchor="w", pady=(0, 20))
+
+        def update_description(choice: str) -> None:
+            """Update description when theme selection changes."""
+            theme_key = theme_keys.get(choice, "default")
+            theme_info = next(
+                (t for t in themes if t["key"] == theme_key), None
+            )
+            if theme_info:
+                desc_label.configure(text=theme_info["description"])
+
+        # Set initial description
+        update_description(current_theme_name)
+
+        # Update description on change
+        theme_combo.configure(command=update_description)
+
+        # Preview section
+        preview_label: ctk.CTkLabel = ctk.CTkLabel(
+            settings_content,
+            text="Color Preview",
+            font=ctk.CTkFont(size=14, weight="bold"),
+            text_color=TEXT_PRIMARY,
+        )
+        preview_label.pack(anchor="w", pady=(10, 5))
+
+        # Preview frame with color swatches
+        preview_frame: ctk.CTkFrame = ctk.CTkFrame(
+            settings_content,
+            fg_color=DARK_BG_TERTIARY,
+            corner_radius=10,
+            height=80,
+        )
+        preview_frame.pack(fill="x", pady=(0, 30))
+        preview_frame.pack_propagate(False)
+
+        # Color swatches
+        colors_to_preview = [
+            ACCENT_PURPLE,
+            ACCENT_BLUE,
+            ACCENT_GREEN,
+            SUCCESS,
+            ERROR,
+        ]
+
+        swatches_container: ctk.CTkFrame = ctk.CTkFrame(
+            preview_frame, fg_color="transparent"
+        )
+        swatches_container.pack(expand=True)
+
+        for color in colors_to_preview:
+            swatch: ctk.CTkFrame = ctk.CTkFrame(
+                swatches_container,
+                width=50,
+                height=50,
+                corner_radius=10,
+                fg_color=color,
+            )
+            swatch.pack(side="left", padx=5)
+
+        # Apply button
+        def apply_theme() -> None:
+            """Apply selected theme."""
+            selected_name = theme_var.get()
+            theme_key = theme_keys.get(selected_name, "default")
+
+            if theme_manager.switch_theme(theme_key):
+                # Refresh UI with new theme
+                self.refresh_ui()
+
+        apply_btn: ModernButton = ModernButton(
+            settings_content,
+            text="Apply Theme",
+            command=apply_theme,
+            color=ACCENT_PURPLE,
+        )
+        apply_btn.pack(fill="x")
+
+    def refresh_ui(self) -> None:
+        """Refresh UI after theme change."""
+        # Reload colors from new theme
+        from ui import colors
+
+        colors.reload_colors()
+
+        # Force re-import of colors in main namespace
+        import importlib
+
+        importlib.reload(colors)
+
+        # Update the color imports in current module
+        import sys
+
+        current_module = sys.modules[__name__]
+        for color_name in [
+            "ACCENT_BLUE",
+            "ACCENT_GREEN",
+            "ACCENT_PURPLE",
+            "DARK_BG",
+            "DARK_BG_SECONDARY",
+            "DARK_BG_TERTIARY",
+            "ERROR",
+            "GRADIENT_START",
+            "SUCCESS",
+            "TEXT_MUTED",
+            "TEXT_PRIMARY",
+            "TEXT_SECONDARY",
+            "CATEGORY_COLORS",
+        ]:
+            setattr(current_module, color_name, getattr(colors, color_name))
+
+        # Recreate sidebar
+        self.sidebar.destroy()
+        self.content_frame.destroy()
+
+        # Recreate UI structure
+        self._setup_ui()
+
+        # Recreate current view
+        if self.current_view == "dashboard":
+            self.show_dashboard()
+        elif self.current_view == "add_transaction":
+            self.show_add_transaction()
+        elif self.current_view == "history":
+            self.show_history()
+        elif self.current_view == "settings":
+            self.show_settings()
+        else:
+            self.show_dashboard()
 
 
 def main() -> None:

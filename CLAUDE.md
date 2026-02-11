@@ -6,6 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Personal Finance Tracker - a desktop application for tracking personal finances with a modern UI inspired by crypto wallets. Built with Python and CustomTkinter.
 
+**Key Features:**
+- Multiple color themes (5 presets: Default, Ocean Breeze, Sunset Glow, Forest Green, Midnight Blue)
+- Theme persistence via TOML configuration files
+- Dynamic theme switching without application restart
+
 ## Development Setup
 
 ### Virtual Environment
@@ -64,9 +69,13 @@ pre-commit install
 claude_project/
 ├── main.py              # Main application entry point and UI logic
 ├── database.py          # SQLite database operations and queries
+├── theme_manager.py     # Theme loading, switching, and persistence
 ├── ui/
-│   ├── colors.py        # Color scheme and theming constants
+│   ├── colors.py        # Dynamic color loading from themes
 │   └── widgets.py       # Custom UI widgets (cards, buttons, etc.)
+├── config/
+│   ├── themes.toml      # Theme definitions (5 presets)
+│   └── settings.toml    # User preferences (selected theme)
 ├── data/                # SQLite database storage (auto-created)
 └── requirements.txt     # Python dependencies
 ```
@@ -79,11 +88,23 @@ claude_project/
 - All transactions tracked with type (income/expense), category, amount, description, and timestamp
 - Statistics calculated on-the-fly from transaction data
 
+### Theme System
+- **theme_manager.py**: Singleton `ThemeManager` class
+  - Loads themes from `config/themes.toml` using tomllib
+  - Manages current theme selection
+  - Saves user preference to `config/settings.toml` using tomli-w
+  - Provides theme switching API
+- **ui/colors.py**: Dynamic color module
+  - Initializes from current theme on import
+  - Provides `reload_colors()` function to update after theme switch
+  - All color constants remain as module-level variables for compatibility
+
 ### UI Layer
-- **main.py**: Contains `FinanceTrackerApp` class (main CTk window) with three views:
+- **main.py**: Contains `FinanceTrackerApp` class (main CTk window) with four views:
   - Dashboard: Shows balance card, statistics, and recent transactions
   - Add Transaction: Form for adding new income/expense entries
   - History: Scrollable list of all transactions
+  - Settings: Theme selector with preview and apply button
 - **ui/colors.py**: Centralized color definitions in crypto wallet dark theme style
 - **ui/widgets.py**: Reusable components:
   - `BalanceCard`: Large balance display card

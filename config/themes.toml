@@ -1,0 +1,221 @@
+# Color Themes for Finance Tracker
+# Each theme defines a complete color palette for the application
+
+[theme.default]
+name = "Crypto Wallet"
+description = "Modern crypto wallet inspired dark theme with purple accents"
+
+# Background colors
+dark_bg = "#0F0F1E"
+dark_bg_secondary = "#1A1A2E"
+dark_bg_tertiary = "#252541"
+
+# Accent colors
+accent_purple = "#9D4EDD"
+accent_blue = "#4CC9F0"
+accent_green = "#06FFA5"
+accent_red = "#FF4D6D"
+
+# Text colors
+text_primary = "#FFFFFF"
+text_secondary = "#A0A0C0"
+text_muted = "#6B6B8F"
+
+# Gradient colors
+gradient_start = "#7209B7"
+gradient_end = "#560BAD"
+
+# Status colors
+success = "#06FFA5"
+error = "#FF4D6D"
+warning = "#FFB703"
+info = "#4CC9F0"
+
+# Category colors
+[theme.default.categories]
+Food = "#FF6B6B"
+Transport = "#4ECDC4"
+Shopping = "#FFD93D"
+Entertainment = "#A8DADC"
+Bills = "#6C63FF"
+Health = "#FF8FA3"
+Education = "#74B9FF"
+Salary = "#06FFA5"
+Investment = "#9D4EDD"
+Other = "#95A5A6"
+
+
+[theme.ocean_breeze]
+name = "Ocean Breeze"
+description = "Calm ocean-inspired theme with deep blues and cyan accents"
+
+# Background colors
+dark_bg = "#0A1929"
+dark_bg_secondary = "#132F4C"
+dark_bg_tertiary = "#1E4976"
+
+# Accent colors
+accent_purple = "#00E5FF"
+accent_blue = "#00BCD4"
+accent_green = "#26A69A"
+accent_red = "#FF5252"
+
+# Text colors
+text_primary = "#FFFFFF"
+text_secondary = "#B3E5FC"
+text_muted = "#546E7A"
+
+# Gradient colors
+gradient_start = "#0277BD"
+gradient_end = "#01579B"
+
+# Status colors
+success = "#26A69A"
+error = "#FF5252"
+warning = "#FFA726"
+info = "#00E5FF"
+
+# Category colors
+[theme.ocean_breeze.categories]
+Food = "#FF6F61"
+Transport = "#00ACC1"
+Shopping = "#FFCA28"
+Entertainment = "#4DD0E1"
+Bills = "#42A5F5"
+Health = "#EC407A"
+Education = "#5C6BC0"
+Salary = "#26A69A"
+Investment = "#00BCD4"
+Other = "#78909C"
+
+
+[theme.sunset_glow]
+name = "Sunset Glow"
+description = "Warm sunset theme with orange and pink hues"
+
+# Background colors
+dark_bg = "#1A0E0E"
+dark_bg_secondary = "#2D1B1B"
+dark_bg_tertiary = "#3F2626"
+
+# Accent colors
+accent_purple = "#FF6B9D"
+accent_blue = "#FF8E53"
+accent_green = "#FFB74D"
+accent_red = "#E53935"
+
+# Text colors
+text_primary = "#FFF8E1"
+text_secondary = "#FFCCBC"
+text_muted = "#8D6E63"
+
+# Gradient colors
+gradient_start = "#D84315"
+gradient_end = "#BF360C"
+
+# Status colors
+success = "#FFB74D"
+error = "#E53935"
+warning = "#FFA726"
+info = "#FF8E53"
+
+# Category colors
+[theme.sunset_glow.categories]
+Food = "#FF7043"
+Transport = "#FF6F00"
+Shopping = "#FFCA28"
+Entertainment = "#FFAB91"
+Bills = "#FF6B9D"
+Health = "#F06292"
+Education = "#BA68C8"
+Salary = "#FFB74D"
+Investment = "#FF8E53"
+Other = "#A1887F"
+
+
+[theme.forest_green]
+name = "Forest Green"
+description = "Professional nature-inspired theme with emerald and jade tones"
+
+# Background colors
+dark_bg = "#0D1B0D"
+dark_bg_secondary = "#1A2A1A"
+dark_bg_tertiary = "#263826"
+
+# Accent colors
+accent_purple = "#10B981"
+accent_blue = "#14B8A6"
+accent_green = "#84CC16"
+accent_red = "#EF4444"
+
+# Text colors
+text_primary = "#F0FDF4"
+text_secondary = "#BBF7D0"
+text_muted = "#6B7280"
+
+# Gradient colors
+gradient_start = "#047857"
+gradient_end = "#065F46"
+
+# Status colors
+success = "#10B981"
+error = "#EF4444"
+warning = "#F59E0B"
+info = "#14B8A6"
+
+# Category colors
+[theme.forest_green.categories]
+Food = "#F87171"
+Transport = "#14B8A6"
+Shopping = "#FBBF24"
+Entertainment = "#6EE7B7"
+Bills = "#34D399"
+Health = "#FB7185"
+Education = "#818CF8"
+Salary = "#10B981"
+Investment = "#84CC16"
+Other = "#9CA3AF"
+
+
+[theme.midnight_blue]
+name = "Midnight Blue"
+description = "Classic corporate theme with deep navy and royal blue"
+
+# Background colors
+dark_bg = "#0C0E1A"
+dark_bg_secondary = "#151929"
+dark_bg_tertiary = "#1F2437"
+
+# Accent colors
+accent_purple = "#6366F1"
+accent_blue = "#3B82F6"
+accent_green = "#10B981"
+accent_red = "#EF4444"
+
+# Text colors
+text_primary = "#F8FAFC"
+text_secondary = "#CBD5E1"
+text_muted = "#64748B"
+
+# Gradient colors
+gradient_start = "#1E3A8A"
+gradient_end = "#1E40AF"
+
+# Status colors
+success = "#10B981"
+error = "#EF4444"
+warning = "#F59E0B"
+info = "#3B82F6"
+
+# Category colors
+[theme.midnight_blue.categories]
+Food = "#F87171"
+Transport = "#60A5FA"
+Shopping = "#FBBF24"
+Entertainment = "#A78BFA"
+Bills = "#3B82F6"
+Health = "#FB7185"
+Education = "#818CF8"
+Salary = "#10B981"
+Investment = "#6366F1"
+Other = "#94A3B8"
